@@ -4,13 +4,15 @@ type ChunkCallback = (text: string) => void;
 type DoneCallback = () => void;
 type ErrorCallback = (message: string) => void;
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? '';
+
 export async function generateItinerary(
   request: ItineraryRequest,
   onChunk: ChunkCallback,
   onDone: DoneCallback,
   onError: ErrorCallback,
 ): Promise<void> {
-  const response = await fetch('/api/itinerary/generate', {
+  const response = await fetch(`${API_BASE_URL}/api/itinerary/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
