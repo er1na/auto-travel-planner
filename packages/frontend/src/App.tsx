@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppView, SavedPlan } from './types';
 import { Layout } from './components/Layout';
 import { TravelForm } from './components/TravelForm';
@@ -25,13 +25,25 @@ function HeroSection() {
 export function App() {
   const [view, setView] = useState<AppView>('home');
   const [showResult, setShowResult] = useState(false);
+  const [mobileShowResult, setMobileShowResult] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SavedPlan | null>(null);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 960 : false,
+  );
 
   const { itinerary, isLoading, isDone, error, savedPlans, lastRequest, generate, saveCurrent, deletePlan } = useItinerary();
+  const hasResult = isDone && itinerary.trim().length > 0;
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 960);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const handleGenerate = async (request: Parameters<typeof generate>[0]) => {
     setShowResult(true);
+    setMobileShowResult(false);
     setIsSaved(false);
     await generate(request);
   };
@@ -44,7 +56,13 @@ export function App() {
 
   const handleNewPlan = () => {
     setShowResult(false);
+    setMobileShowResult(false);
     setIsSaved(false);
+  };
+
+  const handleViewGenerated = () => {
+    if (!hasResult) return;
+    setMobileShowResult(true);
   };
 
   const handleNavigate = (v: AppView) => {
@@ -66,25 +84,34 @@ export function App() {
     <Layout view={view} onNavigate={handleNavigate}>
       {view === 'home' && (
         <div style={{
-          display: 'grid',
+          display: isMobile ? 'block' : 'grid',
           gridTemplateColumns: showResult ? '440px 1fr' : '1fr',
-          gridTemplateRows: '1fr',
+          gridTemplateRows: isMobile ? undefined : '1fr',
           height: 'calc(100dvh - 64px)',
         }}>
           {/* Form panel */}
-          <div style={{
-            height: '100%',
-            overflowY: 'auto',
-            borderRight: showResult ? '1px solid var(--md-outline-variant)' : 'none',
-          }}>
-            {!showResult && <HeroSection />}
-            <div style={showResult ? {} : { maxWidth: '560px', margin: '0 auto' }}>
-              <TravelForm onSubmit={handleGenerate} isLoading={isLoading} />
+          {(!isMobile || !mobileShowResult) && (
+            <div style={{
+              height: '100%',
+              overflowY: 'auto',
+              borderRight: !isMobile && showResult ? '1px solid var(--md-outline-variant)' : 'none',
+            }}>
+              {!showResult && <HeroSection />}
+              <div style={showResult ? {} : { maxWidth: '560px', margin: '0 auto' }}>
+                <TravelForm
+                  onSubmit={handleGenerate}
+                  isLoading={isLoading}
+                  isDone={isDone}
+                  hasResult={hasResult}
+                  isMobile={isMobile}
+                  onViewResult={handleViewGenerated}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Result panel */}
-          {showResult && (
+          {(!isMobile && showResult) || (isMobile && mobileShowResult) ? (
             <ItineraryDisplay
               itinerary={itinerary}
               isLoading={isLoading}
@@ -95,7 +122,7 @@ export function App() {
               onNewPlan={handleNewPlan}
               isSaved={isSaved}
             />
-          )}
+          ) : null}
         </div>
       )}
 
