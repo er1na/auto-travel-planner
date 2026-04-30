@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  --rt-primary: #001b3d;
+  --rt-accent: #d2b48c;
+  --rt-green: #2a7b5f;
+  --rt-bg: #f8f9fd;
+  --rt-white: #ffffff;
+  --rt-text: #1a2233;
+  --rt-text-muted: #667;
+  --rt-border: #dde3ec;
+  --rt-past-bg: #eef3f8;
+  --rt-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  --rt-radius: 10px;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background-color: var(--rt-bg);
+  color: var(--rt-text);
+}
+
+#root {
+  height: 100%;
+}

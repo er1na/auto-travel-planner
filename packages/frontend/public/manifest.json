@@ -1,0 +1,16 @@
+{
+  "name": "旅のしおり AI",
+  "short_name": "旅しおり",
+  "description": "AIが旅のしおりを自動生成",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
