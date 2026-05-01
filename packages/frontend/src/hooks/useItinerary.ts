@@ -24,6 +24,14 @@ export function useItinerary() {
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>(loadPlans);
   const [lastRequest, setLastRequest] = useState<ItineraryRequest | null>(null);
 
+  const reset = useCallback(() => {
+    setItinerary('');
+    setIsLoading(false);
+    setIsDone(false);
+    setError(null);
+    setLastRequest(null);
+  }, []);
+
   const generate = useCallback(async (request: ItineraryRequest) => {
     setItinerary('');
     setIsLoading(true);
@@ -86,6 +94,7 @@ export function useItinerary() {
     savedPlans,
     lastRequest,
     generate,
+    reset,
     saveCurrent,
     deletePlan,
   };

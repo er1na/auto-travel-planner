@@ -35,3 +35,94 @@ body {
 #root {
   height: 100%;
 }
+
+/* ── Itinerary content styling ── */
+.itinerary-content { line-height: 1.8; color: var(--rt-text); }
+
+.itinerary-content h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--rt-primary);
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--rt-accent);
+  margin: 0 0 28px;
+}
+
+.itinerary-content h2 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--rt-white);
+  background-color: var(--rt-primary);
+  border-left: 4px solid var(--rt-accent);
+  padding: 10px 20px;
+  margin: 36px -36px 20px;
+}
+
+.itinerary-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--rt-primary);
+  background-color: var(--rt-bg);
+  border-left: 3px solid var(--rt-accent);
+  padding: 8px 14px;
+  border-radius: 0 6px 6px 0;
+  margin: 20px 0 10px;
+}
+
+.itinerary-content p { margin: 8px 0; }
+
+.itinerary-content strong { color: var(--rt-primary); font-weight: 700; }
+
+.itinerary-content hr {
+  border: none;
+  border-top: 2px solid var(--rt-accent);
+  margin: 28px 0;
+  opacity: 0.5;
+}
+
+.itinerary-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+.itinerary-content ul li {
+  padding: 3px 0 3px 20px;
+  position: relative;
+}
+.itinerary-content ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--rt-accent);
+  font-size: 12px;
+  top: 6px;
+}
+.itinerary-content ul ul li::before { content: '–'; color: var(--rt-text-muted); }
+
+.itinerary-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.itinerary-content thead tr {
+  background-color: var(--rt-primary);
+  color: var(--rt-white);
+}
+.itinerary-content th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.itinerary-content td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rt-border);
+  vertical-align: top;
+}
+.itinerary-content tbody tr:nth-child(even) { background-color: var(--rt-bg); }
+.itinerary-content tbody tr:last-child td { border-bottom: none; font-weight: 700; background-color: #eef1f8; }

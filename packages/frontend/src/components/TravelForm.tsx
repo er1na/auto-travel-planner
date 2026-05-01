@@ -25,10 +25,8 @@ const BUDGET_OPTIONS: { value: BudgetLevel; label: string; sub: string }[] = [
 interface TravelFormProps {
   onSubmit: (request: ItineraryRequest) => void;
   isLoading: boolean;
-  isDone: boolean;
-  hasResult: boolean;
-  isMobile: boolean;
-  onViewResult: () => void;
+  showViewResult?: boolean;
+  onViewResult?: () => void;
 }
 
 const sectionLabel: React.CSSProperties = {
@@ -54,7 +52,7 @@ const inputStyle: React.CSSProperties = {
   transition: 'border-color 0.2s',
 };
 
-export function TravelForm({ onSubmit, isLoading, isDone, hasResult, isMobile, onViewResult }: TravelFormProps) {
+export function TravelForm({ onSubmit, isLoading, showViewResult, onViewResult }: TravelFormProps) {
   const today = new Date().toISOString().split('T')[0];
 
   const [destination, setDestination] = useState('');
@@ -80,10 +78,6 @@ export function TravelForm({ onSubmit, isLoading, isDone, hasResult, isMobile, o
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (isMobile && isDone && hasResult && !isLoading) {
-      onViewResult();
-      return;
-    }
     if (!destination.trim()) return;
     onSubmit({
       destination,
@@ -106,8 +100,7 @@ export function TravelForm({ onSubmit, isLoading, isDone, hasResult, isMobile, o
     e.currentTarget.style.borderWidth = '1px';
   };
 
-  const isViewResultMode = isMobile && isDone && hasResult && !isLoading;
-  const canSubmit = isViewResultMode || (!isLoading && destination.trim().length > 0);
+  const canSubmit = !isLoading && destination.trim().length > 0;
 
   const cardSection = (children: React.ReactNode) => (
     <div style={{
@@ -297,22 +290,38 @@ export function TravelForm({ onSubmit, isLoading, isDone, hasResult, isMobile, o
         </>
       )}
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={!canSubmit}
-        style={{
-          width: '100%', padding: '16px', borderRadius: '6px', border: 'none',
-          backgroundColor: canSubmit ? 'var(--rt-primary)' : 'var(--rt-border)',
-          color: canSubmit ? 'var(--rt-white)' : 'var(--rt-text-muted)',
-          fontSize: '14px', fontWeight: '700', fontFamily: 'inherit',
-          letterSpacing: '1px', cursor: canSubmit ? 'pointer' : 'not-allowed',
-          transition: 'background-color 0.2s',
-          borderBottom: canSubmit ? '3px solid var(--rt-accent)' : '3px solid transparent',
-        }}
-      >
-        {isLoading ? 'しおりを作成中...' : isViewResultMode ? '作成されたしおりを見る' : 'しおりを作成する'}
-      </button>
+      {/* Submit / View result */}
+      {showViewResult ? (
+        <button
+          type="button"
+          onClick={onViewResult}
+          style={{
+            width: '100%', padding: '16px', borderRadius: '6px', border: 'none',
+            backgroundColor: 'var(--rt-accent)', color: 'var(--rt-primary)',
+            fontSize: '14px', fontWeight: '700', fontFamily: 'inherit',
+            letterSpacing: '1px', cursor: 'pointer',
+            borderBottom: '3px solid #b8966a',
+          }}
+        >
+          作成されたしおりを見る
+        </button>
+      ) : (
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          style={{
+            width: '100%', padding: '16px', borderRadius: '6px', border: 'none',
+            backgroundColor: canSubmit ? 'var(--rt-primary)' : 'var(--rt-border)',
+            color: canSubmit ? 'var(--rt-white)' : 'var(--rt-text-muted)',
+            fontSize: '14px', fontWeight: '700', fontFamily: 'inherit',
+            letterSpacing: '1px', cursor: canSubmit ? 'pointer' : 'not-allowed',
+            transition: 'background-color 0.2s',
+            borderBottom: canSubmit ? '3px solid var(--rt-accent)' : '3px solid transparent',
+          }}
+        >
+          {isLoading ? 'しおりを作成中...' : 'しおりを作成する'}
+        </button>
+      )}
     </form>
   );
 }

@@ -123,7 +123,7 @@ export function ItineraryDisplay({
               boxShadow: 'var(--rt-shadow)',
               padding: '32px 36px',
             }}>
-              <div className="prose prose-slate max-w-none">
+              <div className="itinerary-content">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{itinerary}</ReactMarkdown>
               </div>
               {isLoading && (

@@ -32,7 +32,7 @@ export function App() {
     typeof window !== 'undefined' ? window.innerWidth < 960 : false,
   );
 
-  const { itinerary, isLoading, isDone, error, savedPlans, lastRequest, generate, saveCurrent, deletePlan } = useItinerary();
+  const { itinerary, isLoading, isDone, error, savedPlans, lastRequest, generate, reset, saveCurrent, deletePlan } = useItinerary();
   const hasResult = isDone && itinerary.trim().length > 0;
 
   useEffect(() => {
@@ -58,6 +58,7 @@ export function App() {
     setShowResult(false);
     setMobileShowResult(false);
     setIsSaved(false);
+    reset();
   };
 
   const handleViewGenerated = () => {
@@ -101,9 +102,7 @@ export function App() {
                 <TravelForm
                   onSubmit={handleGenerate}
                   isLoading={isLoading}
-                  isDone={isDone}
-                  hasResult={hasResult}
-                  isMobile={isMobile}
+                  showViewResult={isMobile && hasResult && !isLoading}
                   onViewResult={handleViewGenerated}
                 />
               </div>

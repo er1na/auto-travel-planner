@@ -15,19 +15,38 @@ export class ItineraryController {
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no');
 
-    const send = (payload: object) =>
-      res.write(`data: ${JSON.stringify(payload)}\n\n`);
+    let aborted = false;
+    res.on('close', () => { aborted = true; });
+
+    const send = (payload: object): boolean => {
+      if (aborted || res.writableEnded) return false;
+      try {
+        res.write(`data: ${JSON.stringify(payload)}\n\n`);
+        return true;
+      } catch {
+        aborted = true;
+        return false;
+      }
+    };
+
+    // Keep-alive ping every 15s to prevent proxy timeouts
+    const keepAlive = setInterval(() => {
+      if (aborted || res.writableEnded) { clearInterval(keepAlive); return; }
+      try { res.write(': ping\n\n'); } catch { aborted = true; }
+    }, 15000);
 
     try {
       for await (const chunk of this.generateItineraryUseCase.execute(request)) {
+        if (aborted) break;
         send({ type: 'text', content: chunk });
       }
-      send({ type: 'done' });
+      if (!aborted) send({ type: 'done' });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'エラーが発生しました';
       send({ type: 'error', message });
     } finally {
-      res.end();
+      clearInterval(keepAlive);
+      if (!res.writableEnded) res.end();
     }
   }
 }

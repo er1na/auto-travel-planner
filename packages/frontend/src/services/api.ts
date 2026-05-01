@@ -26,6 +26,8 @@ export async function generateItinerary(
   const decoder = new TextDecoder();
   let buffer = '';
 
+  let receivedDone = false;
+
   try {
     while (true) {
       const { done, value } = await reader.read();
@@ -47,8 +49,10 @@ export async function generateItinerary(
           if (data.type === 'text' && data.content) {
             onChunk(data.content);
           } else if (data.type === 'done') {
+            receivedDone = true;
             onDone();
           } else if (data.type === 'error') {
+            receivedDone = true;
             onError(data.message ?? 'エラーが発生しました');
           }
         } catch {
@@ -58,5 +62,7 @@ export async function generateItinerary(
     }
   } finally {
     reader.releaseLock();
+    // ストリームが done イベントなしで終了した場合のフォールバック
+    if (!receivedDone) onDone();
   }
 }
