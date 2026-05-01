@@ -81,6 +81,11 @@ export function App() {
     if (selectedPlan?.id === id) setSelectedPlan(null);
   };
 
+  const handleBackFromSavedDetail = () => {
+    setSelectedPlan(null);
+    setView('saved');
+  };
+
   return (
     <Layout view={view} onNavigate={handleNavigate}>
       {view === 'home' && (
@@ -131,6 +136,7 @@ export function App() {
           selectedPlan={selectedPlan}
           onSelect={handleSelectPlan}
           onDelete={handleDeletePlan}
+          onBackToList={handleBackFromSavedDetail}
         />
       )}
     </Layout>
